@@ -4,6 +4,16 @@ A local command-line engine that turns code and algorithms into 1080p educationa
 
 Runs entirely on your machine using free, open-source tools: Python, FFmpeg, and Chrome. No cloud subscriptions, no paid API keys.
 
+<p align="center">
+  <a href="docs/assets/dart_rectangle_motion.mp4">
+    <img src="docs/assets/demo.gif" alt="Motion Demo: Dart 2D Geometry and Rectangle Area Calculation" width="100%" />
+  </a>
+</p>
+<p align="center">
+  <b>Sample Output</b>: Dart 2D Geometry &amp; Rectangle Area Calculation (1080p DOM/SVG animation with neural voiceover)<br />
+  <a href="docs/assets/dart_rectangle_motion.mp4"><strong>Watch Full 1080p Video with Audio (MP4)</strong></a> &bull; <a href="docs/assets/demo_poster.jpg">View High-Res Keyframe Poster</a>
+</p>
+
 ---
 
 ## What It Does

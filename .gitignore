@@ -39,6 +39,3 @@ output/
 # OS
 .DS_Store
 Thumbs.db
-
-# Documentation & Generated Diagrams
-docs/

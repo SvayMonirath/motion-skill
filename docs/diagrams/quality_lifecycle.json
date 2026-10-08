@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "diagram_type": "lifecycle",
+  "meta": {
+    "title": "Video Quality Inspection Lifecycle",
+    "output": "quality_lifecycle.html",
+    "viewBox": [980, 660],
+    "animation": "trace",
+    "quality_profile": "showcase",
+    "views": [
+      {
+        "id": "main-lifecycle",
+        "label": "Pass Path to Delivery",
+        "focus": ["rendered", "sampling", "auditing", "sync_check", "delivered"],
+        "note": "Follow the inspection steps from raw render to verified delivery."
+      },
+      {
+        "id": "quality-checks",
+        "label": "Quality Checks and Pauses",
+        "focus": ["auditing", "blank_found", "sync_check", "drift_found"],
+        "note": "See where inspection catches bad frames or drifting sound."
+      },
+      {
+        "id": "recovery-and-exits",
+        "label": "Auto Retime and Terminal Stops",
+        "focus": ["auditing", "retime_fix", "drift_found", "rejected", "halted"],
+        "note": "Separate recoverable layout fixes from fatal errors."
+      }
+    ]
+  },
+  "lanes": [
+    { "id": "main", "label": "Inspection phases" },
+    { "id": "waiting", "label": "Quality pauses" },
+    { "id": "exceptions", "label": "Recovery loop" },
+    { "id": "terminal", "label": "Terminal stops" }
+  ],
+  "states": [
+    { "id": "rendered", "type": "start", "label": "Rendered", "sublabel": "raw MP4 video", "lane": "main", "col": 0, "step": "01", "tag": "entry" },
+    { "id": "sampling", "type": "active", "label": "Sample Frames", "sublabel": "grab 4 test images", "lane": "main", "col": 1, "step": "02", "tag": "ffmpeg" },
+    { "id": "auditing", "type": "active", "label": "Audit Pixels", "sublabel": "test screen contents", "lane": "main", "col": 2, "step": "03", "tag": "pillow" },
+    { "id": "sync_check", "type": "decision", "label": "Verify Sync", "sublabel": "test audio duration", "lane": "main", "col": 3, "step": "04", "tag": "ffprobe" },
+    { "id": "delivered", "type": "success", "label": "Delivered", "sublabel": "ready to watch", "lane": "main", "col": 4, "step": "05", "tag": "pass" },
+    { "id": "blank_found", "type": "waiting", "label": "Blank Screen", "sublabel": "black frame caught", "lane": "waiting", "col": 0, "tag": "pause" },
+    { "id": "drift_found", "type": "waiting", "label": "Audio Drift", "sublabel": "sound length mismatch", "lane": "waiting", "col": 1, "tag": "drift" },
+    { "id": "retime_fix", "type": "failure", "label": "Auto Retime", "sublabel": "rebuild scene timeline", "lane": "exceptions", "col": 0, "yOffset": 78, "tag": "retryable" },
+    { "id": "rejected", "type": "failure", "label": "Rejected", "sublabel": "unrecoverable flaw", "lane": "terminal", "col": 0, "tag": "terminal" },
+    { "id": "halted", "type": "failure", "label": "Halted", "sublabel": "missing audio stream", "lane": "terminal", "col": 1, "tag": "terminal" }
+  ],
+  "transitions": [
+    { "id": "blank-detected", "from": "auditing", "to": "blank_found", "variant": "security", "fromSide": "bottom", "toSide": "top", "route": "straight" },
+    { "id": "drift-detected", "from": "sync_check", "to": "drift_found", "variant": "default", "route": "drop" },
+    { "id": "retime-needed", "from": "auditing", "to": "retime_fix", "variant": "security", "fromSide": "left", "toSide": "left", "via": [[320, 157], [320, 385]] },
+    { "id": "retime-retry", "from": "retime_fix", "to": "auditing", "variant": "emphasis", "fromSide": "left", "toSide": "top", "via": [[20, 385], [20, 80], [402, 80]] },
+    { "id": "drift-halted", "from": "drift_found", "to": "halted", "variant": "security", "fromSide": "bottom", "toSide": "top", "route": "straight" },
+    { "id": "blank-rejected", "from": "blank_found", "to": "rejected", "variant": "security", "fromSide": "bottom", "toSide": "top", "via": [[480, 336], [480, 432], [402, 432]] }
+  ],
+  "cards": [
+    {
+      "dot": "emerald",
+      "title": "Frame Sampling",
+      "items": [
+        "Grabs frames across 10%, 35%, 65%, and 90% of playback",
+        "Ensures no part of the animation is missed"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Pixel Inspection",
+      "items": [
+        "Scans for all-black or blank empty backgrounds",
+        "Measures visual detail so cards are never missing"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Audio Sync Guard",
+      "items": [
+        "Compares voice file length against MP4 video duration",
+        "Blocks files if sound and picture drift apart"
+      ]
+    }
+  ]
+}
