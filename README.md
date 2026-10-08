@@ -72,6 +72,16 @@ This system operates as an **autonomous orchestration and quality-control pipeli
 
 ---
 
+## Interactive System Diagrams
+
+Standalone, zero-jargon interactive diagrams generated with Archify (open in any web browser):
+
+- **[System Architecture](docs/diagrams/system_architecture.html)** (`docs/diagrams/system_architecture.html`): High-level view showing input scanners, audio engine, GPU rendering, and automated quality testing.
+- **[Production Workflow](docs/diagrams/pipeline_workflow.html)** (`docs/diagrams/pipeline_workflow.html`): Step-by-step pipeline from your CLI command through storyboard drafting to final MP4 delivery.
+- **[Quality Inspection Lifecycle](docs/diagrams/quality_lifecycle.html)** (`docs/diagrams/quality_lifecycle.html`): Detailed state progression of frame extraction, pixel audits, audio sync checks, and auto-retry gates.
+
+---
+
 ## Design System Presets
 
 Switch styles at runtime via `--style <name>`:

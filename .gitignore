@@ -34,6 +34,7 @@ yarn-error.log*
 .cache/
 qa_frames/
 raw_video.mp4
+output/
 
 # OS
 .DS_Store
