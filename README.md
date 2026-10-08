@@ -1,8 +1,8 @@
-# Autonomous AI Educational Motion-Graphics System
+# Motion: Autonomous Product Showcase & Educational Video Engine
 
-> Transform source code, algorithms, data structures, mathematics, and technical architecture into polished **1080p educational motion-graphics videos** with deterministic runtime tracing, human-like neural voiceover, and automated visual QA.
+> Turn any codebase into a high-end **3D product showcase commercial** using your native design tokens (`/motion-showcase`), or transform algorithms and code into **1080p educational motion graphics** with deterministic runtime tracing (`/motion-explain`).
 
-**100% Local & FOSS** · **Zero Cloud API Subscriptions** · **Zero AI Hallucination in Code State**
+**100% Local & FOSS** · **Zero Cloud API Subscriptions** · **Zero AI Hallucination or Buzzwords**
 
 ---
 
@@ -108,22 +108,37 @@ pip install -r requirements.txt
 
 *(Node dependencies and HyperFrames run on-demand via `npx`—no global npm bloat).*
 
-### 2. Generate Your First Video
+### 2. Generate a Video
+
+#### A. Showcase Your Product (`/motion-showcase`)
+Scans your current repository (Flutter, React, Next.js, Vue), pulls your brand colors and features, and generates a 3D isometric commercial:
+
+```bash
+# In your app directory
+python3 /path/to/motion/bin/motion showcase .
+
+# With different tone presets
+python3 /path/to/motion/bin/motion showcase . --tone hype
+python3 /path/to/motion/bin/motion showcase . --tone apple-minimal
+```
+
+#### B. Explain an Algorithm or Code (`/motion-explain`)
+Traces execution, highlights code step-by-step, and creates a 1080p educational video:
 
 ```bash
 # Default Dark Cinematic style with neural narration
-python3 bin/edumotion.py "Explain binary search"
+python3 bin/motion explain "Explain binary search"
 
 # Cartoon & Anime style
-python3 bin/edumotion.py "Explain binary search" --style "cartoon + anime"
+python3 bin/motion explain "Explain binary search" --style "cartoon + anime"
 
 # Technical blueprint without audio
-python3 bin/edumotion.py "Explain binary search" --style technical --no-audio
+python3 bin/motion explain "Explain binary search" --style technical --no-audio
 ```
 
 ### 3. View the Result
 
-Your final video, audio track, storyboard, and QA inspection report are saved in `output/<topic>/`:
+Your final video, audio track, storyboard, and QA inspection report are saved in `output/`:
 
 ```bash
 # Play on macOS

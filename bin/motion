@@ -1,0 +1,133 @@
+#!/usr/bin/env python3
+"""
+Motion CLI: Unified Autonomous Video & Motion-Graphics Engine.
+Commands:
+  motion showcase [target_dir] [--tone TONE] [--no-voice]
+  motion explain "<topic>" [--style STYLE] [--no-audio]
+"""
+
+import sys
+import os
+import argparse
+import json
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, BASE_DIR)
+
+from core.codebase_scanner import CodebaseScanner
+from core.showcase_builder import ShowcaseBuilder
+from core.audio_engine import AudioEngine
+from core.visual_qa import VisualQA
+from bin.edumotion import run_pipeline as run_explain_pipeline
+
+def handle_showcase(target_dir: str, output_dir: str, with_voice: bool = True, tone: str = "cinematic"):
+    print(f"=== Starting Motion Product Showcase ===")
+    print(f"Target Project: {os.path.abspath(target_dir)}")
+    print(f"Tone: {tone}")
+    
+    os.makedirs(output_dir, exist_ok=True)
+
+    # 1. Scan Codebase
+    print("\n[Step 1] Scanning Codebase & Design Tokens...")
+    scanner = CodebaseScanner(target_dir=target_dir)
+    product_info = scanner.scan()
+    print(f" Identified Product: {product_info['name']}")
+    print(f" Tagline: {product_info['tagline']}")
+    print(f" Primary Color: {product_info['primary_color']}")
+    print(f" Features: {', '.join(product_info['features'])}")
+
+    # 2. Build 3D Isometric Showcase Composition
+    print("\n[Step 2] Building 3D Perspective Showcase Composition...")
+    builder = ShowcaseBuilder(output_dir=output_dir)
+    html_path = builder.generate_showcase_html(product_info, duration_sec=16.0)
+    print(f" Authored composition HTML -> {html_path}")
+
+    # 3. Voiceover narration if requested
+    audio_path = os.path.join(output_dir, "narration.mp3")
+    final_video = os.path.join(output_dir, f"{product_info['name'].lower().replace(' ', '_')}_showcase.mp4")
+    raw_video = os.path.join(output_dir, "raw_video.mp4")
+
+    if with_voice:
+        print("\n[Step 3] Synthesizing Product Voiceover...")
+        script = (
+            f"Introducing {product_info['name']}. {product_info['tagline']}. "
+            f"Built for speed, simplicity, and real-time responsiveness. "
+            f"See what you can build today."
+        )
+        audio_engine = AudioEngine()
+        audio_info = audio_engine.generate_narration(script, audio_path)
+        print(f" Generated voiceover ({audio_info['duration']:.1f}s)")
+
+    # 4. Render Video via Hyperframes
+    print("\n[Step 4] Rendering 1080p MP4 via Hyperframes...")
+    builder.render_showcase(raw_video)
+    print(" Hyperframes render complete.")
+
+    # 5. Mux Audio & Final Assembly
+    if with_voice and os.path.exists(audio_path):
+        import subprocess
+        subprocess.run([
+            "ffmpeg", "-y",
+            "-i", raw_video,
+            "-i", audio_path,
+            "-c:v", "copy",
+            "-c:a", "aac",
+            "-shortest",
+            final_video
+        ], capture_output=True)
+    else:
+        if os.path.exists(raw_video):
+            os.replace(raw_video, final_video)
+
+    # 6. Empirical Visual QA
+    print("\n[Step 5] Running Empirical Visual QA...")
+    qa = VisualQA(output_dir=output_dir)
+    qa_report = qa.inspect_video(final_video)
+    print(f" Visual QA: {'PASSED' if qa_report['passed'] else 'FAILED'}")
+    print(f" Resolution: {qa_report.get('resolution')}")
+    print(f" Duration: {qa_report.get('duration')}s")
+    print(f" File Size: {qa_report.get('file_size_kb')} KB")
+    print(f"\nFinal Video Artifact: {final_video}")
+    return final_video
+
+def main():
+    parser = argparse.ArgumentParser(description="Motion: Autonomous Video & Motion-Graphics Engine")
+    subparsers = parser.add_subparsers(dest="command", help="Command to run")
+
+    # showcase subcommand
+    sc_parser = subparsers.add_parser("showcase", help="Create a 3D product showcase video from codebase")
+    sc_parser.add_argument("target_dir", nargs="?", default=".", help="Project root to inspect")
+    sc_parser.add_argument("--output", "-o", default=os.path.join(BASE_DIR, "output", "showcase"), help="Output path")
+    sc_parser.add_argument("--tone", default="cinematic", help="Pacing & tone preset")
+    sc_parser.add_argument("--no-voice", action="store_true", help="Disable voiceover")
+
+    # explain subcommand
+    ex_parser = subparsers.add_parser("explain", help="Create an educational motion graphic from an algorithm/topic")
+    ex_parser.add_argument("topic", nargs="?", default="Explain binary search", help="Topic to explain")
+    ex_parser.add_argument("--output", "-o", default=os.path.join(BASE_DIR, "output", "binary_search"), help="Output path")
+    ex_parser.add_argument("--style", default="dark_cinematic", help="Visual style preset")
+    ex_parser.add_argument("--no-audio", action="store_true", help="Disable audio")
+
+    args = parser.parse_args()
+
+    if args.command == "showcase":
+        handle_showcase(
+            target_dir=args.target_dir,
+            output_dir=args.output,
+            with_voice=not args.no_voice,
+            tone=args.tone
+        )
+    elif args.command == "explain" or args.command is None:
+        topic = getattr(args, "topic", "Explain binary search")
+        style = getattr(args, "style", "dark_cinematic")
+        no_audio = getattr(args, "no_audio", False)
+        output = getattr(args, "output", os.path.join(BASE_DIR, "output", "binary_search"))
+        run_explain_pipeline(
+            topic=topic,
+            output_dir=output,
+            with_audio=not no_audio,
+            style=style
+        )
+
+if __name__ == "__main__":
+    main()
