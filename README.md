@@ -1,210 +1,180 @@
-# Motion: Autonomous Product Showcase & Educational Video Engine
+# Motion
 
-> Turn any codebase into a high-end **3D product showcase commercial** using your native design tokens (`/motion-showcase`), or transform algorithms and code into **1080p educational motion graphics** with deterministic runtime tracing (`/motion-explain`).
+A local command-line engine that turns code and algorithms into 1080p educational motion graphics, and generates animated showcase videos from your software projects.
 
-**100% Local & FOSS** · **Zero Cloud API Subscriptions** · **Zero AI Hallucination or Buzzwords**
-
----
-
-## Overview
-
-Most AI video systems generate generic PowerPoint-like slides or hallucinate what code does step-by-step. 
-
-This system operates as an **autonomous orchestration and quality-control pipeline** combining proven Free and Open Source Software (FOSS) tools:
-1. **Deterministic Execution Tracing**: Uses Python's native `sys.settrace` and Abstract Syntax Tree (AST) parser to observe actual runtime memory, variables, and line transitions rather than guessing.
-2. **Web-Grade Motion Graphics**: Uses **HyperFrames** to render seekable HTML5, CSS3, SVG, and GSAP timelines via a local Headless Chrome shell with Hardware GPU acceleration (Apple Metal / Vulkan).
-3. **Neural Speech Narration**: Synthesizes human-grade neural voiceover and parses WebVTT timestamp cues via **Edge-TTS** to synchronize visual events to the spoken word.
-4. **Empirical Visual QA**: Samples representative frames with **FFmpeg** and audits image variance with **Pillow** to detect black screens, overlapping text, or audio/video drift before delivering the video.
-5. **Anti-Jargon Scripting**: Enforces strict plain-English pedagogical rules—no corporate AI buzzwords (*"delve"*, *"tapestry"*, *"seamlessly"*).
+Runs entirely on your machine using free, open-source tools: Python, FFmpeg, and Chrome. No cloud subscriptions, no paid API keys.
 
 ---
 
-## Architecture
+## What It Does
+
+Most automated video tools output static slides or guess what code is doing. Motion takes a direct, code-first approach:
+
+1. **Traces real execution**: Runs Python code through `sys.settrace` and parses the Abstract Syntax Tree (AST) to record exact line numbers, variables, and runtime state changes.
+2. **Synchronizes audio to visual steps**: Generates clear voice narration using Edge-TTS and reads cue timestamps so visual highlights appear exactly when spoken.
+3. **Renders web-grade animations**: Uses GSAP timelines and HyperFrames inside headless Chrome with hardware GPU acceleration to render smooth 60fps MP4 video.
+4. **Automated visual check**: Samples output frames with FFmpeg and Pillow to detect black frames, overlapping text, or audio drift before finalizing.
+5. **Clear, direct language**: Scripts explanations in plain English, avoiding buzzwords and filler.
+
+---
+
+## How It Works
 
 ```text
-               Educational Input (Code / Algorithm / Concept)
+               Input (Code / Algorithm / Project Directory)
                                      │
                                      ▼
         ┌────────────────────────────────────────────────────────┐
-        │  [Execution & Semantic Layer]                          │
-        │  • Deterministic Tracer (sys.settrace + AST)           │
-        │  • Syntax Highlighter & Line Tokenizer (Pygments)       │
+        │  1. Code & State Analysis                              │
+        │  • Traces runtime variables & active line transitions  │
+        │  • Tokenizes and highlights syntax                     │
         └────────────────────────────┬───────────────────────────┘
                                      │
                                      ▼
         ┌────────────────────────────────────────────────────────┐
-        │  [Pedagogical Planning Layer]                          │
-        │  • Plain-English Storyboard Planner                    │
-        │  • Visual Design System Presets                        │
+        │  2. Storyboard & Narration Planning                    │
+        │  • Breaks explanation into clear, step-by-step points  │
+        │  • Applies visual design tokens (colors, fonts, layout)│
         └────────────────────────────┬───────────────────────────┘
                                      │
                      ┌───────────────┴───────────────┐
                      ▼                               ▼
-       [Audio Narration Engine]           [Motion Composition Engine]
-       • Edge-TTS Neural Voice            • Column-Slot Physical Layout
-       • WebVTT Cue Timestamps            • GSAP Seekable Timeline
-       • Audio Duration Probe             • DOM & SVG State Animations
+       [Audio Narration]                   [Motion Layout]
+       • Neural voice synthesis            • Two-column layout
+       • WebVTT timestamp sync             • GSAP timeline animations
                      │                               │
                      └───────────────┬───────────────┘
                                      │
                                      ▼
         ┌────────────────────────────────────────────────────────┐
-        │  [Headless GPU Renderer (Hyperframes)]                 │
-        │  • Headless Chrome Shell with Metal/ANGLE GPU          │
-        │  • Frame-by-Frame Streaming & Capture                  │
+        │  3. Frame-by-Frame GPU Rendering                       │
+        │  • Headless Chrome renders DOM/SVG at 1080p 60fps      │
         └────────────────────────────┬───────────────────────────┘
                                      │
                                      ▼
         ┌────────────────────────────────────────────────────────┐
-        │  [Media Multiplexing & Assembly (FFmpeg)]              │
-        │  • High-Profile H.264 Video + 24kHz AAC Audio Mux      │
-        │  • Strict Duration Synchronization (0.0s drift)        │
-        └────────────────────────────┬───────────────────────────┘
-                                     │
-                                     ▼
-        ┌────────────────────────────────────────────────────────┐
-        │  [Empirical Visual QA Layer]                           │
-        │  • Temporal Keyframe Extraction (FFmpeg)               │
-        │  • Brightness, Variance & Blank Detection (PIL)        │
-        │  • Resolution & Audio/Video Stream Inspection          │
+        │  4. Assembly & Quality Check                           │
+        │  • Muxes video (H.264) and audio (AAC) with FFmpeg     │
+        │  • Scans keyframes for blank screens or timing drift   │
         └────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## Interactive System Diagrams
+## Design Presets
 
-Standalone, zero-jargon interactive diagrams generated with Archify (open in any web browser):
+Customize the visual appearance with `--style <name>`:
 
-- **[System Architecture](docs/diagrams/system_architecture.html)** (`docs/diagrams/system_architecture.html`): High-level view showing input scanners, audio engine, GPU rendering, and automated quality testing.
-- **[Production Workflow](docs/diagrams/pipeline_workflow.html)** (`docs/diagrams/pipeline_workflow.html`): Step-by-step pipeline from your CLI command through storyboard drafting to final MP4 delivery.
-- **[Quality Inspection Lifecycle](docs/diagrams/quality_lifecycle.html)** (`docs/diagrams/quality_lifecycle.html`): Detailed state progression of frame extraction, pixel audits, audio sync checks, and auto-retry gates.
-
----
-
-## Design System Presets
-
-Switch styles at runtime via `--style <name>`:
-
-| Style Preset | Aesthetic & Tokens | Best For |
+| Style Preset | Look and Feel | Recommended For |
 | :--- | :--- | :--- |
-| `dark_cinematic` *(Default)* | Obsidian `#090d16`, ambient sky-cyan glow, Inter + JetBrains Mono, glassmorphism cards | Modern developer tooling, CS algorithms |
-| `technical` | Slate `#0f172a`, blueprint borders, sharp 1px grid, compact data pills | Architecture diagrams, network flows |
-| `mathematical` | Chalkboard `#121417`, gold accents `#eab308`, formula callouts, serif math type | Calculus, linear algebra, 3Blue1Brown style |
-| `anime_cartoon` | Deep indigo `#13111c`, sakura pink `#ff79c6`, neon lime `#50fa7b`, bouncy elastic springs | Engaging tutorials, social media, playful guides |
+| `dark_cinematic` *(Default)* | Dark background, cyan accents, clean monospace typography | Algorithms, systems programming, data structures |
+| `technical` | Slate background, blueprint grid, sharp borders | Network protocols, API flows, architecture |
+| `mathematical` | Chalkboard aesthetic, gold highlights, serif accents | Math proofs, calculus, linear algebra |
+| `anime_cartoon` | Vibrant indigo, pink and neon accents, spring physics | Engaging beginner tutorials, social walkthroughs |
 
 ---
 
 ## Prerequisites
 
-Ensure these free tools are installed on your machine:
-- **Node.js** (v22.0 or higher): `node -v`
-- **Python** (v3.10 or higher): `python3 --version`
-- **FFmpeg & ffprobe**: `ffmpeg -version` (e.g. `brew install ffmpeg` on macOS)
+Before running Motion, ensure these tools are installed:
+
+- **Python** (3.10 or newer): `python3 --version`
+- **Node.js** (v20 or newer): `node -v`
+- **FFmpeg & ffprobe**: `ffmpeg -version` (e.g. `brew install ffmpeg` on macOS, `sudo apt install ffmpeg` on Ubuntu)
 
 ---
 
 ## Quickstart
 
-### 1. Clone & Install Dependencies
+### 1. Clone & Install
 
 ```bash
-git clone https://github.com/your-username/educational-motion-graphics.git
-cd educational-motion-graphics
+git clone https://github.com/SvayMonirath/motion.git
+cd motion
 
-# Install Python requirements
+# Install Python dependencies
 pip install -r requirements.txt
 ```
 
-*(Node dependencies and HyperFrames run on-demand via `npx`—no global npm bloat).*
+### 2. Generate an Educational Video (`explain`)
 
-### 2. Generate a Video
-
-#### A. Showcase Your Product (`/motion-showcase`)
-Scans your current repository (Flutter, React, Next.js, Vue), pulls your brand colors and features, and generates a 3D isometric commercial:
+Explain an algorithm with step-by-step code execution and voiceover:
 
 ```bash
-# In your app directory
-python3 /path/to/motion/bin/motion showcase .
-
-# With different tone presets
-python3 /path/to/motion/bin/motion showcase . --tone hype
-python3 /path/to/motion/bin/motion showcase . --tone apple-minimal
-```
-
-#### B. Explain an Algorithm or Code (`/motion-explain`)
-Traces execution, highlights code step-by-step, and creates a 1080p educational video:
-
-```bash
-# Default Dark Cinematic style with neural narration
+# Default dark cinematic style
 python3 bin/motion explain "Explain binary search"
 
-# Cartoon & Anime style
-python3 bin/motion explain "Explain binary search" --style "cartoon + anime"
+# With a different visual style
+python3 bin/motion explain "Explain bubble sort" --style technical
 
-# Technical blueprint without audio
-python3 bin/motion explain "Explain binary search" --style technical --no-audio
+# Render video without voiceover
+python3 bin/motion explain "Explain binary search" --no-audio
 ```
 
-### 3. View the Result
+### 3. Generate a Product Showcase Video (`showcase`)
 
-Your final video, audio track, storyboard, and QA inspection report are saved in `output/`:
+Scan a frontend or mobile codebase and generate a 3D animated showcase:
 
 ```bash
-# Play on macOS
+# Point to your project folder
+python3 bin/motion showcase /path/to/your/project
+
+# Adjust tone (hype, apple-minimal, technical)
+python3 bin/motion showcase /path/to/your/project --tone apple-minimal
+```
+
+### 4. View Output
+
+Rendered videos, audio tracks, and inspection frames are saved in `output/`:
+
+```bash
+# On macOS
 open output/binary_search/educational_binary_search.mp4
 ```
 
 ---
 
-## Agent Skill Integration
+## Agent Skill Setup
 
-This repository ships with a ready-to-use agent skill definition for **Google Antigravity / Gemini**, **Claude Code**, and **Cursor**.
-
-### Installing for Gemini / Antigravity CLI
-
-Link the skill folder into your agent config:
+Motion can also be used as a tool inside AI agent environments (Google Antigravity, Claude Code, Cursor):
 
 ```bash
+# Link the skill to your Antigravity config
 mkdir -p ~/.gemini/config/skills
-ln -s "$(pwd)/skills/educational-motion-graphics" ~/.gemini/config/skills/educational-motion-graphics
+ln -s "$(pwd)/skills/motion" ~/.gemini/config/skills/motion
 ```
 
-Then simply ask your agent in chat:
-```text
-/animate Explain binary search
-/animate Explain this Python code
-/animate Explain how TCP handshake works
-```
+Once linked, trigger it directly in conversation:
+- `/motion-explain Explain how quicksort partitions an array`
+- `/motion-showcase Create a launch video for this repo`
 
 ---
 
 ## Project Structure
 
 ```text
-educational-motion-graphics/
+motion/
 ├── bin/
-│   └── edumotion.py            # Unified CLI entry point for planning, tracing, rendering, QA
+│   ├── motion                  # Main CLI executable
+│   └── edumotion.py            # Educational motion runner
 ├── core/
-│   ├── execution_tracer.py     # Deterministic Python runtime execution tracer (AST & sys.settrace)
-│   ├── code_highlighter.py     # Pygments syntax highlighter with line tagging
-│   ├── audio_engine.py         # Edge-TTS voiceover & subtitle generator
-│   ├── planner.py              # Visual explanation & storyboard planner (anti-jargon)
-│   ├── renderer.py             # HyperFrames composition builder & render caller
-│   └── visual_qa.py            # FFmpeg frame extractor & automated visual quality auditor
+│   ├── execution_tracer.py     # Python AST and sys.settrace runtime tracer
+│   ├── code_highlighter.py     # Pygments syntax highlighter
+│   ├── audio_engine.py         # Voiceover synthesis and subtitle timing
+│   ├── planner.py              # Storyboard and script planning
+│   ├── renderer.py             # HyperFrames and GSAP composition builder
+│   └── visual_qa.py            # Frame extraction and quality checks
 ├── styles/
-│   └── presets.py              # Visual design presets (Cinematic, Technical, Math, Anime)
+│   └── presets.py              # Color palettes, typography, and layout rules
 ├── skills/
-│   └── educational-motion-graphics/
-│       └── SKILL.md            # Agent skill prompt definition
-├── output/                     # Rendered MP4s, MP3s, and QA frames
+│   └── motion/                 # Agent skill definition (SKILL.md)
 ├── requirements.txt            # Python dependencies
-├── .gitignore
-└── README.md
+├── .gitignore                  # Git ignore rules
+└── README.md                   # Project documentation
 ```
 
 ---
 
 ## License
 
-MIT License. Free to use, modify, and distribute for personal, educational, and commercial projects.
+Open source. Free to use, modify, and distribute for personal and educational projects.
