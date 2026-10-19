@@ -1,4 +1,4 @@
-# Motion
+# Motion-SKILL
 
 A local command-line engine that turns code and algorithms into 1080p educational motion graphics, and generates animated showcase videos from your software projects.
 
